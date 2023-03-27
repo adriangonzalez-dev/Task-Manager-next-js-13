@@ -1,7 +1,5 @@
 'use client'
 
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
 import { useTasks } from './hooks/useTasks'
 import TaskCard from './components/Task';
 
