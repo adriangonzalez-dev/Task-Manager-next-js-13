@@ -6,21 +6,33 @@ import { useForm } from 'react-hook-form'
 
 export default function TaskForm() {
   const {handleSubmit, formState:{errors}, register, reset} = useForm();
-  const {tasksReducer,lastId} = useTasks();
+  const {tasksReducer} = useTasks();
   const router = useRouter();
   const createTask = async (data) => {
-    const action = {
-      type: 'ADD_TASK',
-      payload: {
-        id: lastId + 1,
-        title: data.title,
-        description: data.description
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      const dataResponse = await response.json();
+      const action = {
+        type: 'ADD_TASK',
+        payload: dataResponse.task
       }
+      tasksReducer(action);
+
+      successAlert('Task created successfully');
+
+      router.push('/');
+
+    } catch (error) {
+
+      console.log(error);
     }
 
-    tasksReducer(action);
-    successAlert('Task created successfully');
-    router.push('/');
   }
 
   const handleBack = () => {
@@ -68,6 +80,27 @@ export default function TaskForm() {
         })}></textarea>
         {
           errors.description && <span className='error-message'>{errors.description.message}</span>
+        }
+      </div>
+      <div className='flex flex-col gap-1'>
+        <label className='text-gray-900'>Prioridad</label>
+        <select 
+        name="" 
+        id="" 
+        className='input'
+        {...register('priority',{
+          required: {
+            value:true,
+            message: 'Priority is required'
+          },
+        })}>
+          <option value="" selected hidden>Selecciona la prioridad</option>
+          <option value="alta">Alta</option>
+          <option value="media">Media</option>
+          <option value="baja">Baja</option>
+        </select>
+        {
+          errors.priority && <span className='error-message'>{errors.priority.message}</span>
         }
       </div>
       <button type="submit" className='btn'>Save</button>

@@ -30,42 +30,30 @@ const initialState = []
 export function TaskProvider({children}) {
 
     const [tasks, tasksReducer] = useReducer(reducer, initialState);
-    const [lastId, setLastId] = useState(0)
 
-    const getLastId = () => {
-        const id =  tasks.length > 0 ? tasks[tasks.length - 1].id : 0;
-        setLastId(id);
-    }
-
-    const getTasks = () => {
-        const localTasks = localStorage.getItem('tasks');
-        if(localTasks){
-            return JSON.parse(localTasks);
-        }
-        return [];
-    }
-
-    const saveTasks = () => {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+    const getTasks = async () => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const data = await response.json();
+        tasksReducer({
+            type: 'GET_TASKS',
+            payload: data.tasks
+        })
     }
 
     useEffect(() => {
-        const localTasks = getTasks();
-        if(localTasks.length > 0){
-            tasksReducer({
-                type: 'GET_TASKS',
-                payload: localTasks
-            })
-        }
+        getTasks();
     },[])
 
     useEffect(() => {
-        saveTasks();
-        getLastId();
     },[tasks])
 
   return (
-    <TaskContext.Provider value={{tasks, tasksReducer, lastId}}>
+    <TaskContext.Provider value={{tasks, tasksReducer}}>
         {children}
     </TaskContext.Provider>
   )
