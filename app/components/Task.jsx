@@ -8,30 +8,44 @@ export default function TaskCard({id, title, description}){
 
   const {tasksReducer} = useTasks()
 
-  const handleDelete = () => {
-    const action = {
-      type: 'DELETE_TASK',
-      payload: id
-    }
+  const handleDelete = async () => {
+    try {
 
-    Swal.fire({
-      title: 'Are you sure to delete this task?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-      background: '#fff',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        tasksReducer(action);
-        Swal.fire(
-          'Deleted!',
-          'Your task has been deleted.',
-          'success'
-        )
-      }
-    })
+      Swal.fire({
+        title: 'Are you sure to delete this task?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        background: '#fff',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks/${id}`,{
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          const action = {
+            type: 'DELETE_TASK',
+            payload: id
+          }
+          tasksReducer(action);
+          Swal.fire(
+            'Deleted!',
+            'Your task has been deleted.',
+            'success'
+          )
+        }
+      })
+      
+    } catch (error) {
+      console.log(error)
+    }
+    
+
+    
 
   }
 

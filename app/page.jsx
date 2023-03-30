@@ -5,7 +5,6 @@ import TaskCard from './components/Task';
 
 export default function Home() {
   const {tasks} = useTasks();
-  
   return (
     <main >
 
@@ -16,8 +15,8 @@ export default function Home() {
       }
       {
         tasks.map(task => <TaskCard 
-        key={task.id} 
-        id={task.id}
+        key={task._id} 
+        id={task._id}
         title={task.title}
         description={task.description}
         />)

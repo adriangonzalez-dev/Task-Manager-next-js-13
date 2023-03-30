@@ -14,11 +14,18 @@ const reducer = (state, action) => {
 
         }
         case 'UPDATE_TASK': {
-            return state.map(task => task.id === action.payload.id ? action.payload : task)
+            
+            const updatedTasks = state.map(task => {
+                if(task._id === action.payload._id){
+                    return action.payload
+                }
+                return task
+            })
+            return updatedTasks
         }
             
         case 'DELETE_TASK':{
-            return state.filter(task => task.id !== action.payload)
+            return state.filter(task => task._id !== action.payload)
         }
         default:
             return state;
@@ -48,10 +55,6 @@ export function TaskProvider({children}) {
     useEffect(() => {
         getTasks();
     },[])
-
-    useEffect(() => {
-    },[tasks])
-
   return (
     <TaskContext.Provider value={{tasks, tasksReducer}}>
         {children}

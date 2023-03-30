@@ -13,8 +13,15 @@ export default function EditForm({params}) {
   const {id} = params;
   const router = useRouter();
 
-  const getTask = (idTask) => {
-    const task = tasks.find(task => +task.id === +idTask);
+  const getTask = async (idTask) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks/${idTask}`,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await response.json();
+    const task = data.task;
     setTask(task);
   }
 
@@ -23,17 +30,29 @@ export default function EditForm({params}) {
   }, [id])
 
 
-  const onSubmit = (data) => {
-    const action = {
-      type:'UPDATE_TASK',
-      payload: {
-        ...task,
-        ...data
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks/${id}`,{
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      const dataResponse = await response.json();
+
+      const task = dataResponse.task;
+      const action = {
+        type:'UPDATE_TASK',
+        payload: task
       }
+      tasksReducer(action);
+      successAlert('Task updated successfully')
+      router.push('/');
+    } catch (error) {
+      console.log(error)
     }
-    tasksReducer(action);
-    successAlert('Task updated successfully')
-    router.push('/');
+    
   }
 
   const handleBack = () => {
@@ -53,10 +72,6 @@ export default function EditForm({params}) {
         type="text" 
         className='input'
         {...register('title',{
-          required: {
-            value: true,
-            message: 'Title is required'
-          },
           minLength: {
             value: 3,
             message: 'Min length is 3'
@@ -77,10 +92,6 @@ export default function EditForm({params}) {
         cols="30" 
         rows="5"
         {...register('description',{
-          required: {
-            value:true,
-            message: 'Description is required'
-          },
           minLength: {
             value: 3,
             message: 'Min length is 3'
@@ -88,6 +99,23 @@ export default function EditForm({params}) {
         })}></textarea>
         {
           errors.description && <span className='error-message'>{errors.description.message}</span>
+        }
+      </div>
+      <div className='flex flex-col gap-1'>
+        <label className='text-gray-900'>Prioridad</label>
+        <select 
+        name="" 
+        id="" 
+        value={task?.priority}
+        className='input'
+        {...register('priority')}>
+          <option value="" hidden>Selecciona la prioridad</option>
+          <option value="alta">Alta</option>
+          <option value="media">Media</option>
+          <option value="baja">Baja</option>
+        </select>
+        {
+          errors.priority && <span className='error-message'>{errors.priority.message}</span>
         }
       </div>
       <button type="submit" className='btn'>Edit</button>
