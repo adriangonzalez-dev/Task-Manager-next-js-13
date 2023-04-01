@@ -1,5 +1,5 @@
+import { AuthProvider } from '@/context/AuthContext'
 import { TaskProvider } from '@/context/TaskContext'
-import Header from './components/Header'
 import './globals.css'
 
 export const metadata = {
@@ -15,12 +15,14 @@ export default function RootLayout({ children }) {
       <head>
         <link rel='shortcut icon' href='/favicon/favicon.ico'/>
       </head>
-      <TaskProvider>
-        <body className='w-full h-full'>       
-        <Header/>
-        {children}
-        </body>
-      </TaskProvider>
+      <AuthProvider>
+        <TaskProvider>
+          <body className='w-full h-full bg-tasks'>       
+          {children}
+          </body>
+        </TaskProvider>
+      </AuthProvider>
+
     </html>
   )
 }

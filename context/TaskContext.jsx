@@ -27,6 +27,17 @@ const reducer = (state, action) => {
         case 'DELETE_TASK':{
             return state.filter(task => task._id !== action.payload)
         }
+
+        case 'DONE_TASK':{
+            const updatedTasks = state.map(task => {
+                if(task._id === action.payload){
+                    task.done = true;
+                    return task
+                }
+                return task
+            })
+            return updatedTasks
+        }
         default:
             return state;
     }
@@ -38,23 +49,6 @@ export function TaskProvider({children}) {
 
     const [tasks, tasksReducer] = useReducer(reducer, initialState);
 
-    const getTasks = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks`,{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const data = await response.json();
-        tasksReducer({
-            type: 'GET_TASKS',
-            payload: data.tasks
-        })
-    }
-
-    useEffect(() => {
-        getTasks();
-    },[])
   return (
     <TaskContext.Provider value={{tasks, tasksReducer}}>
         {children}

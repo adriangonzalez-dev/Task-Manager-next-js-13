@@ -6,7 +6,11 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage:{
+        'tasks': "url('/bg-4.png')",
+      }
+    },
   },
   plugins: [],
 }

@@ -8,7 +8,7 @@ export default function Header() {
       <Link href="/" className="text-2xl font-bold">
         Task Manager
       </Link>
-      <Link href="new" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+      <Link href="tasks/new" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
           New Task
       </Link>
     </header>

@@ -1,78 +1,98 @@
 'use client'
-import {useRouter} from 'next/navigation'
-import { successAlert } from '@/app/components/Alerts';
-import { useTasks } from '@/app/hooks/useTasks'
-import { useForm } from 'react-hook-form'
 
-export default function TaskForm() {
-  const {handleSubmit, formState:{errors}, register, reset} = useForm();
-  const {tasksReducer} = useTasks();
+import { useEffect, useState } from 'react';
+import {useForm} from 'react-hook-form'
+import {useRouter} from 'next/navigation'
+import { useTasks } from '@/app/tasks/hooks/useTasks';
+import { successAlert } from '@/app/tasks/components/Alerts';
+
+export default function EditForm({params}) {
+  const [task, setTask] = useState();
+  const {handleSubmit, formState:{errors}, register} = useForm();
+  const {tasks, tasksReducer} = useTasks();
+  const {id} = params;
   const router = useRouter();
-  const createTask = async (data) => {
+
+  const getTask = async (idTask) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks/${idTask}`,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await response.json();
+    const task = data.task;
+    setTask(task);
+  }
+
+  useEffect(() => {
+    getTask(id);
+  }, [id])
+
+
+  const onSubmit = async (data) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks`,{
-        method: 'POST',
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks/${id}`,{
+        method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'x-auth-token': JSON.parse(localStorage.getItem('token'))
         },
         body: JSON.stringify(data)
       })
       const dataResponse = await response.json();
+
+      const task = dataResponse.task;
       const action = {
-        type: 'ADD_TASK',
-        payload: dataResponse.task
+        type:'UPDATE_TASK',
+        payload: task
       }
       tasksReducer(action);
-
-      successAlert('Task created successfully');
-
-      router.push('/');
-
+      successAlert('Task updated successfully')
+      router.push('tasks');
     } catch (error) {
-
-      console.log(error);
+      console.log(error)
     }
-
+    
   }
 
   const handleBack = () => {
     router.push('/');
   }
+
   return (
+
     <form 
-    onSubmit={handleSubmit(createTask)}
-    className='flex flex-col gap-2 w-full '>
-    <h4 className='text-xl font-semibold text-center'>ADD NEW TASK</h4>
+    className='flex flex-col gap-2 w-full'
+    onSubmit={handleSubmit(onSubmit)}>
+    <h4 className='text-xl font-semibold text-center'>EDIT TASK</h4>
       <div className='flex flex-col gap-1'>
         <label className='text-gray-900'>Title</label>
         <input 
-        type="text" className='input'
+        defaultValue={task?.title}
+        type="text" 
+        className='input'
         {...register('title',{
-          required: {
-            value: true,
-            message: 'Title is required'
-          },
           minLength: {
             value: 3,
             message: 'Min length is 3'
           }
-        })}
+        }
+        )}
         />
         {
           errors.title && <span className='error-message'>{errors.title.message}</span>
         }
       </div>
+
       <div className='flex flex-col gap-1'>
         <label className='text-gray-900'>Description</label>
         <textarea 
+        defaultValue={task?.description}
         className='input' 
         cols="30" 
         rows="5"
         {...register('description',{
-          required: {
-            value:true,
-            message: 'Description is required'
-          },
           minLength: {
             value: 3,
             message: 'Min length is 3'
@@ -87,14 +107,10 @@ export default function TaskForm() {
         <select 
         name="" 
         id="" 
+        defaultValue={task?.priority}
         className='input'
-        {...register('priority',{
-          required: {
-            value:true,
-            message: 'Priority is required'
-          },
-        })}>
-          <option value="" selected hidden>Selecciona la prioridad</option>
+        {...register('priority')}>
+          <option value="" hidden>Selecciona la prioridad</option>
           <option value="alta">Alta</option>
           <option value="media">Media</option>
           <option value="baja">Baja</option>
@@ -103,10 +119,12 @@ export default function TaskForm() {
           errors.priority && <span className='error-message'>{errors.priority.message}</span>
         }
       </div>
-      <button type="submit" className='btn'>Save</button>
+      <button type="submit" className='btn'>Edit</button>
       <button 
       onClick={handleBack}
       className="btn">Back to tasks</button>
     </form>
+
   )
 }
+
