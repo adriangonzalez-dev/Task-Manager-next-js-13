@@ -78,7 +78,7 @@ export default function TaskCard({task}){
   return (
     <div className="flex justify-center">
       <div
-        className="block w-52 md:w-96 rounded-lg bg-white text-center shadow-lg">
+        className="block w-60 md:w-96 rounded-lg bg-white text-center shadow-lg">
         <div
           className={`relative border-b-2 py-3 px-6 rounded-md ${task.done ? 'bg-success-100 border-success-200 text-success-700' : 'bg-danger-100 border-danger-200 text-danger-700'}`}>
           <span>{task.done ? 'Done' : 'Pending'}</span>

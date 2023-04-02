@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import {useForm} from 'react-hook-form'
 import useAuth from './tasks/hooks/useAuth';
 import { Spinner } from './components/Spinner';
+import Modal from './tasks/components/Modal';
 
 export default function Login() {
   const {handleSubmit, formState:{errors}, register} = useForm();
@@ -17,29 +18,34 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/auth/login`,{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    const dataResponse = await response.json();
-
-    if(dataResponse.message){
-      setBackErrors(dataResponse.message);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/auth/login`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      const dataResponse = await response.json();
+  
+      if(dataResponse.message){
+        setBackErrors(dataResponse.message);
+        setLoading(false);
+        return;
+      }
+      setBackErrors(null);
+      localStorage.setItem('token', JSON.stringify(dataResponse.token));
+  
+      userDispatch({
+        type: 'LOGIN',
+        payload: dataResponse.user
+      })
+      router.push('/tasks');
+    } catch (error) {
+      console.log(error)
+    } finally {
       setLoading(false);
-      return;
     }
-    setBackErrors(null);
-    localStorage.setItem('token', JSON.stringify(dataResponse.token));
-
-    userDispatch({
-      type: 'LOGIN',
-      payload: dataResponse.user
-    })
-    setLoading(false);
-    router.push('/tasks');
   }
 
   useEffect(() => {
@@ -100,11 +106,18 @@ export default function Login() {
         </div>
         <button className='btn'>{loading ? <Spinner/> :'LOGIN'}</button>
         <div className='flex justify-between w-full text-xs'>
-          <Link href='auth/recovery'>Recuperar contraseña</Link>
+          <button 
+          type='button'
+          data-te-toggle="modal"
+          data-te-target="#staticBackdrop"
+          data-te-ripple-init
+          data-te-ripple-color="light">Recuperar contraseña</button>
           <Link href='auth/register'>Registrarse</Link>
         </div>
         
     </form>
+      {/* <!-- Modal --> */}
+      <Modal/>
     </div>
   )
 }

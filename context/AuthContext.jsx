@@ -28,7 +28,7 @@ export const AuthProvider = ({children}) => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'x-auth-token': JSON.parse(localStorage.getItem('token'))
+                'x-auth-token': localStorage.getItem('token')
             },
             credentials: 'include'
         })

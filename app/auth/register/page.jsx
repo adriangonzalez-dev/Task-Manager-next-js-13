@@ -5,6 +5,7 @@ import { useState } from 'react';
 import {useForm} from 'react-hook-form';
 import {useRouter} from 'next/navigation';
 import { Spinner } from '@/app/components/Spinner';
+import Link from 'next/link';
 const avatars =[
     'Peanut','Simon','Abby','Rascal','Sasha','Boo','Lola','Sophie','Cuddles','Spooky',
     'Max','Lilly','Tiger','Molly','Kitty','Mimi','Milo','Luna','Snowball','Leo'
@@ -153,6 +154,7 @@ export default function page() {
                 loading ? <Spinner/> : 'Register'
             }
             </button>
+            <Link href='/' className='text-sm text-center'>Login with your account</Link>
         </form>
     </div>
   )

@@ -35,9 +35,9 @@ export default function Header() {
                 data-te-ripple-color="light"
               >
                 {/* aca bva el avatar */}
-                <div className="[word-wrap: break-word] my-[5px] flex h-[32px] cursor-pointer items-center justify-between rounded-[16px] bg-[#eceff1] py-0 px-[12px] text-[13px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none transition-[opacity] duration-300 ease-linear hover:!shadow-none active:bg-[#cacfd1] ">
+                <div className="[word-wrap: break-word]  flex gap-2 h-[32px] cursor-pointer items-center justify-center rounded-[16px] bg-[#eceff1] py-0 px-[12px] text-[13px] font-normal normal-case text-[#4f4f4f] ">
                   <Image
-                    className="my-0 mr-[8px] -ml-[12px] h-[inherit] w-[inherit] rounded-[100%]"
+                    className=" rounded-[100%]"
                     src={`https://api.dicebear.com/6.x/adventurer/svg?seed=${user?.avatar}`}
                     width={32}
                     height={32}
@@ -53,7 +53,7 @@ export default function Header() {
               >
                 <li>
                   <button
-                    className="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100  active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400  "
+                    className="block w-24 whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100  active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400  "
                     data-te-dropdown-item-ref
                     onClick={() => logout()}
                   >
