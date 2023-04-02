@@ -3,12 +3,18 @@ import {useRouter} from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { successAlert } from '../../components/Alerts';
 import { useTasks } from '../../hooks/useTasks';
+import { useState } from 'react';
+import { Spinner } from '@/app/components/Spinner';
 
 export default function TaskForm() {
   const {handleSubmit, formState:{errors}, register, reset} = useForm();
   const {tasksReducer} = useTasks();
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
+
   const createTask = async (data) => {
+    setLoading(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks`,{
         method: 'POST',
@@ -26,7 +32,7 @@ export default function TaskForm() {
       tasksReducer(action);
 
       successAlert('Task created successfully');
-
+      setLoading(false);
       router.push('tasks');
 
     } catch (error) {
@@ -105,7 +111,7 @@ export default function TaskForm() {
           errors.priority && <span className='error-message'>{errors.priority.message}</span>
         }
       </div>
-      <button type="submit" className='btn'>Save</button>
+      <button type="submit" className='btn'>{loading ? <Spinner/> : 'SAVE'}</button>
       <button 
       onClick={handleBack}
       className="btn">Back to tasks</button>

@@ -11,5 +11,5 @@
 }
 
 .error-message{
-  @apply rounded bg-red-300 p-1 text-red-900 border-2 border-red-900;
+  @apply rounded bg-danger-100 p-1 text-danger-700 border-2 border-danger-200;
 }

@@ -8,6 +8,16 @@ export default function TaskCard({task}){
 
   const {tasksReducer} = useTasks();
 
+  const stylePriority = ()=>{
+    if(task.priority === 'baja'){
+      return 'bg-success-100 text-success-700'
+    }else if(task.priority === 'media'){
+      return 'bg-warning-100 text-warning-700'
+    }else{
+      return 'bg-danger-100 text-danger-700'
+    }
+  }
+
   const handleDone = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks/${task._id}`,{
@@ -27,8 +37,6 @@ export default function TaskCard({task}){
       console.log(error)
     }
   }
-
-
 
   const handleDelete = async () => {
     try {
@@ -67,38 +75,57 @@ export default function TaskCard({task}){
       console.log(error)
     }
   }
-
   return (
-    <div className="bg-white">
-    <div className={`h-6 rounded-t-md mt-2 ${task.done ? 'bg-green-600' : 'bg-red-600'}`}></div>
-    <div className="bg-white shadow-md rounded px-4 pt-4 pb-4 mb-2 flex flex-col my-2">
-      <div className="mb-4 flex justify-between">
-        <p className="text-gray-700 text-base">
-          {task.title}
-        </p>
-
-        <button 
-        className={`p-2 rounded duration-300 ease-in-out 
-        ${task.done ? 'bg-green-600' : 'bg-red-600 text-slate-50'}`}
-        onClick={handleDone}>
-        {task.done ? 'Finalizado': 'Pendiente'}</button>
-
-      </div>
-      <div className="flex items-center justify-between">
-        <p className="text-gray-600 text-xs italic">{task.description}</p>
-        <div className="flex items-center">
-          <Link href={`tasks/edit/${task._id}`} className="text-indigo-500 inline-flex items-center">
-              Edit
-          </Link>
+    <div className="flex justify-center">
+      <div
+        className="block w-52 md:w-96 rounded-lg bg-white text-center shadow-lg">
+        <div
+          className={`relative border-b-2 py-3 px-6 rounded-md ${task.done ? 'bg-success-100 border-success-200 text-success-700' : 'bg-danger-100 border-danger-200 text-danger-700'}`}>
+          <span>{task.done ? 'Done' : 'Pending'}</span>
+          <span className="text-neutral-800 font-medium absolute right-2 top-1">
           <button 
-          className="text-red-500 inline-flex items-center ml-3"
+          className="border-danger-200 bg-danger-100 text-danger-700 rounded-md outline-danger-200 p-2"
           onClick={handleDelete}
-          >
-            Delete
-          </button>
+          >X</button>
+          </span>
         </div>
-      </div>
+        <div className="p-6">
+          <h5
+            className="mb-2 text-xl font-medium leading-tight text-neutral-800">
+            {task.title}
+          </h5>
+          <p className="mb-4 text-base text-neutral-600">
+            {task.title}
+          </p>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <label htmlFor="check" className={task.done ? 'text-success-700' : 'text-danger-700'}>
+              Completed
+            </label>
+              <input
+                type="checkbox"
+                checked={task.done}
+                onChange={handleDone}
+                id="check"
+              />
+          </div>
+          <div
+            className={`mb-4 rounded-lg p-2 text-base ${stylePriority()}`}
+            role="alert">
+            Prioridad: {task.priority}
+          </div>
+          <Link href={`/tasks/edit/${task._id}`}
+            type="button"
+            className="btn">
+            EDIT
+          </Link>
+        </div>
+        <div
+          className="border-t-2 border-neutral-100 py-3 px-6  ">
+          Created at {task.createdAt.split('T')[0]}
+        </div>
       </div>
     </div>
   )
 }
+
+

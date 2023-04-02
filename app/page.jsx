@@ -2,18 +2,21 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {useForm} from 'react-hook-form'
 import useAuth from './tasks/hooks/useAuth';
+import { Spinner } from './components/Spinner';
 
 export default function Login() {
   const {handleSubmit, formState:{errors}, register} = useForm();
   const {user, userDispatch} = useAuth();
   const [backErrors, setBackErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/auth/login`,{
       method: 'POST',
       headers: {
@@ -25,6 +28,7 @@ export default function Login() {
 
     if(dataResponse.message){
       setBackErrors(dataResponse.message);
+      setLoading(false);
       return;
     }
     setBackErrors(null);
@@ -34,16 +38,19 @@ export default function Login() {
       type: 'LOGIN',
       payload: dataResponse.user
     })
-
+    setLoading(false);
     router.push('/tasks');
   }
 
-  if(user){
-    return router.push('/tasks');
-  }
+  useEffect(() => {
+    if(user){
+      router.push('/tasks');
+    }
+  }, [user])
 
   return (
-    <form 
+    <div className='h-full w-full flex items-center justify-center'>
+      <form 
     className='bg-white w-72 p-4 shadow-xl rounded mx-auto mt-4 flex flex-col gap-4'
     onSubmit={handleSubmit(onSubmit)}>
     <h4 className='text-xl font-semibold text-center'>LOGIN</h4>
@@ -91,11 +98,13 @@ export default function Login() {
               errors.password && <span className='error-message'>{errors.password.message}</span>
             }
         </div>
-        <button className='btn'>LOGIN</button>
+        <button className='btn'>{loading ? <Spinner/> :'LOGIN'}</button>
         <div className='flex justify-between w-full text-xs'>
           <Link href='auth/recovery'>Recuperar contraseña</Link>
           <Link href='auth/register'>Registrarse</Link>
         </div>
+        
     </form>
+    </div>
   )
 }

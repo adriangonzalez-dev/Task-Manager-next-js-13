@@ -9,3 +9,11 @@ export function successAlert(message) {
         timer: 1500
       })
 }
+
+export function errorAlert(message) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: message,
+      })
+}

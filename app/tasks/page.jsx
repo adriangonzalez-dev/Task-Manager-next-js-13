@@ -29,13 +29,16 @@ export default function Home() {
         }
       getTasks();
     },[])
-    if(!user){
-      return router.push('/');
-    }
+    useEffect(() => {
+      if(!user){
+        router.push('/')
+      }
+    },[user])
+
     return (
     <>
     <Header/>
-    <main className='p-2'>
+    <main className='p-2 flex flex-wrap items-center justify-center gap-2'>
       {
         tasks.length === 0 && <div className='flex flex-col items-center justify-center h-full'>
           <h4 className='text-xl my-2'>NO PENDING TASKS</h4>

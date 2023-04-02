@@ -5,11 +5,13 @@ import {useForm} from 'react-hook-form'
 import {useRouter} from 'next/navigation'
 import { useTasks } from '@/app/tasks/hooks/useTasks';
 import { successAlert } from '@/app/tasks/components/Alerts';
+import { Spinner } from '@/app/components/Spinner';
 
 export default function EditForm({params}) {
   const [task, setTask] = useState();
   const {handleSubmit, formState:{errors}, register} = useForm();
   const {tasks, tasksReducer} = useTasks();
+  const [loading, setLoading] = useState(false);
   const {id} = params;
   const router = useRouter();
 
@@ -31,6 +33,7 @@ export default function EditForm({params}) {
 
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tasks/${id}`,{
         method: 'PUT',
@@ -49,6 +52,7 @@ export default function EditForm({params}) {
       }
       tasksReducer(action);
       successAlert('Task updated successfully')
+      setLoading(false);
       router.push('tasks');
     } catch (error) {
       console.log(error)
@@ -119,7 +123,7 @@ export default function EditForm({params}) {
           errors.priority && <span className='error-message'>{errors.priority.message}</span>
         }
       </div>
-      <button type="submit" className='btn'>Edit</button>
+      <button type="submit" className='btn'>{loading ? <Spinner/> : 'EDIT'}</button>
       <button 
       onClick={handleBack}
       className="btn">Back to tasks</button>

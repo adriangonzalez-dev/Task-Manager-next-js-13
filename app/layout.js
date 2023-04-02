@@ -11,14 +11,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es-AR" className='w-screen h-screen'>
+    <html lang="es-AR" className='min-w-full min-h-full'>
       <head>
         <link rel='shortcut icon' href='/favicon/favicon.ico'/>
       </head>
       <AuthProvider>
         <TaskProvider>
-          <body className='w-full h-full bg-tasks'>       
+          <body className='w-full h-full bg-tasks bg-no-repeat bg-cover'>       
           {children}
+          <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/index.min.js"></script>
           </body>
         </TaskProvider>
       </AuthProvider>
