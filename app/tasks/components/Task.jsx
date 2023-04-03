@@ -111,7 +111,7 @@ export default function TaskCard({task}){
           <div
             className={`mb-4 rounded-lg p-2 text-base ${stylePriority()}`}
             role="alert">
-            Prioridad: {task.priority}
+            Priority: {task.priority}
           </div>
           <Link href={`/tasks/edit/${task._id}`}
             type="button"

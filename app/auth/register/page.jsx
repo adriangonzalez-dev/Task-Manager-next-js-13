@@ -6,24 +6,16 @@ import {useForm} from 'react-hook-form';
 import {useRouter} from 'next/navigation';
 import { Spinner } from '@/app/components/Spinner';
 import Link from 'next/link';
-const avatars =[
-    'Peanut','Simon','Abby','Rascal','Sasha','Boo','Lola','Sophie','Cuddles','Spooky',
-    'Max','Lilly','Tiger','Molly','Kitty','Mimi','Milo','Luna','Snowball','Leo'
-]
+
 
 export default function page() {
     const [loading, setLoading] = useState(false);
     const {handleSubmit, formState:{errors}, getValues ,register} = useForm();
     const router = useRouter();
-    const randomAvatar = () => {
-        const randomIndex = Math.floor(Math.random() * avatars.length);
-
-        return avatars[randomIndex];
-    }
+    
 
     const onSubmit = async (data) => {
         setLoading(true);
-        data.avatar = randomAvatar();
         const {password2, ...newData} = data;
         
         try {
@@ -55,15 +47,15 @@ export default function page() {
         onSubmit={handleSubmit(onSubmit)}>
             <h4 className='text-xl font-semibold text-center'>REGISTER</h4>
             <div className='flex flex-col gap-1'>
-                <label htmlFor="">Nombre</label>
+                <label htmlFor="">Name</label>
                 <input 
                 type="text" 
                 className='input'
                 {...register('name', {
-                    required: 'El nombre es requerido',
+                    required: 'The name is required',
                     minLength: {
                         value: 3,
-                        message: 'El nombre debe tener al menos 3 caracteres'
+                        message: 'The name must have at least 3 characters'
                     }
                 })}
                 />
@@ -72,15 +64,15 @@ export default function page() {
                 }
             </div>
             <div className='flex flex-col gap-1'>
-                <label htmlFor="">Apellido</label>
+                <label htmlFor="">Last Name</label>
                 <input 
                 type="text" 
                 className='input'
                 {...register('lastName', {
-                    required: 'El apellido es requerido',
+                    required: 'The last name is required',
                     minLength: {
                         value: 3,
-                        message: 'El apellido debe tener al menos 3 caracteres'
+                        message: 'the last name must have at least 3 characters'
                     }
                 })}
                 />
@@ -94,14 +86,14 @@ export default function page() {
                 type="text" 
                 className='input'
                 {...register('email', {
-                    required: 'El email es requerido',
+                    required: 'The email is required',
                     pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: 'No es un email válido'
+                        message: 'Email is not valid'
                     },
                     minLength: {
                         value: 3,
-                        message: 'El email debe tener al menos 3 caracteres'
+                        message: 'The email must have at least 3 characters'
                     }
                 })}
                 />
@@ -110,15 +102,15 @@ export default function page() {
                 }
             </div>
             <div className='flex flex-col gap-1'>
-                <label htmlFor="">Contraseña</label>
+                <label htmlFor="">Password</label>
                 <input 
                 type="password" 
                 className='input'
                 {...register('password', {
-                    required: 'La contraseña es requerida',
+                    required: 'The password is required',
                     minLength: {
                         value: 6,
-                        message: 'La contraseña debe tener al menos 6 caracteres'
+                        message: 'The password must have at least 6 characters'
                     }
                 })}
                 />
@@ -127,20 +119,20 @@ export default function page() {
                 }
             </div>
             <div className='flex flex-col gap-1'>
-                <label htmlFor="">Repite tu contraseña</label>
+                <label htmlFor="">Confirm password</label>
                 <input 
                 type="password" 
                 className='input'
                 {...register('password2', {
-                    required: 'La contraseña es requerida',
+                    required: 'The password is required',
                     minLength: {
                         value: 6,
-                        message: 'La contraseña debe tener al menos 6 caracteres'
+                        message: 'The password must have at least 6 characters'
                     },
                     validate: {
                         matchesPreviousPassword: (value) => {
                             const { password } = getValues();
-                            return password === value || 'Las contraseñas no coinciden';
+                            return password === value || 'Passwords should match!';
                         }
                     }   
                 })}

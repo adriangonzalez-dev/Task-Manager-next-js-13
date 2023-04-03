@@ -14,6 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="es-AR" className='min-w-full min-h-full'>
       <head>
         <link rel='shortcut icon' href='/favicon/favicon.ico'/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
       </head>
       <AuthProvider>
         <TaskProvider>

@@ -2,69 +2,111 @@
 import Link from "next/link";
 import useAuth from "../hooks/useAuth";
 import Image from "next/image";
+import { useState } from "react";
 
 //react component for the header with tailwind css and links to home and new task
 export default function Header() {
   const { user,userDispatch } = useAuth();
+  const [userDropdown, setUserDropdown] = useState(false);
   const logout = () => {
     localStorage.removeItem('token');
     userDispatch({type:'LOGOUT'})
   }
+
+  const toggleUserDropdown = () => {
+    setUserDropdown(!userDropdown);
+  }
+
   return (
-    <header className="flex justify-between items-center p-2 bg-gray-900 text-white">
-      <Link href="/" className="text-sm md:text-2xl font-bold">
-        Task Manager
-      </Link>
-      <div className="flex gap-2 items-center justify-end">
-        <Link
-          href="tasks/new"
-          className="bg-blue-500 hover:bg-blue-600 text-white p-1 md:p-2 rounded"
-        >
-          New Task
-        </Link>
-        {/* Dropdown */}
-        <div class="flex justify-center">
-          <div>
-            <div className="relative" data-te-dropdown-ref>
-              <button
-                type="button"
-                id="dropdownMenuButton1"
-                data-te-dropdown-toggle-ref
-                aria-expanded="false"
-                data-te-ripple-init
-                data-te-ripple-color="light"
+
+    <header aria-label="Page Header" className="bg-slate-900">
+      <div className="mx-auto max-w-screen-xl px-2 py-4 sm:py-4 sm:px-2 lg:px-8">
+        <div className="sm:flex sm:item-center sm:justify-between">
+          <div className="text-center sm:text-left">
+            <h1 className="text-2xl font-bold text-gray-200 sm:text-3xl">
+              Welcome {user?.name}!
+            </h1>
+
+            <p className="mt-1.5 text-sm text-gray-200">
+              Let's write a new task! 🎉
+            </p>
+          </div>
+
+          <div className=" flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center">
+            <Link 
+            href='/tasks/new' className="btn" type="button">
+              Create Task
+            </Link>
+          </div>
+          <div className="mt-4 flex flex-col gap-4 items-center sm:mt-0 sm:flex-row sm:items-end relative">
+            <Image
+              id="avatarButton"
+              width={60}
+              height={60}
+              type="button"
+              data-dropdown-toggle="userDropdown"
+              data-dropdown-placement="bottom-start"
+              className="w-14 h-14 cursor-pointer  p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
+              src={user?.avatar}
+              alt="User dropdown"
+              onClick={toggleUserDropdown}
+            />
+
+            {userDropdown && (
+              <div
+                id="userDropdown"
+                className="z-10 absolute top-16 sm:top-20 sm:right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
               >
-                {/* aca bva el avatar */}
-                <div className="[word-wrap: break-word]  flex gap-2 h-[32px] cursor-pointer items-center justify-center rounded-[16px] bg-[#eceff1] py-0 px-[12px] text-[13px] font-normal normal-case text-[#4f4f4f] ">
-                  <Image
-                    className=" rounded-[100%]"
-                    src={`https://api.dicebear.com/6.x/adventurer/svg?seed=${user?.avatar}`}
-                    width={32}
-                    height={32}
-                    alt="Contact Person"
-                  />
-                  {user && user.name}
+                <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                  <div>{`${user?.name} ${user?.lastName}`}</div>
+                  <div className="font-medium truncate">{user?.email}</div>
                 </div>
-              </button>
-              <ul
-                className="absolute z-[1000] float-left m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg [&[data-te-dropdown-show]]:block"
-                aria-labelledby="dropdownMenuButton1"
-                data-te-dropdown-menu-ref
-              >
-                <li>
+                <ul
+                  className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="avatarButton"
+                >
+                  <li>
+                    <Link
+                      href="/tasks"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Settings
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Earnings
+                    </a>
+                  </li>
+                </ul>
+                <div className="py-1">
                   <button
-                    className="block w-24 whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100  active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400  "
-                    data-te-dropdown-item-ref
-                    onClick={() => logout()}
-                  >
-                    Logout
+                    href="#"
+                    className="px-4 py-2 text-sm text-gray-700
+                  dark:text-gray-200  m-auto flex gap-2 items-center"
+                  onClick={()=>logout()}>
+                    Sign out
+                    <i className="material-symbols-outlined">logout</i>
                   </button>
-                </li>
-              </ul>
-            </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </header>
   );
 }
+
+

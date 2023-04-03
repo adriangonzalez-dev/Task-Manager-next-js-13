@@ -7,16 +7,19 @@ import {useForm} from 'react-hook-form'
 import useAuth from './tasks/hooks/useAuth';
 import { Spinner } from './components/Spinner';
 import Modal from './tasks/components/Modal';
+import { useSocialLogin } from './services/useSocialLogin';
 
 export default function Login() {
   const {handleSubmit, formState:{errors}, register} = useForm();
   const {user, userDispatch} = useAuth();
   const [backErrors, setBackErrors] = useState(null);
   const [loading, setLoading] = useState(false);
+  const {loginWithGoogle} = useSocialLogin();
 
   const router = useRouter();
-
+  
   const onSubmit = async (data) => {
+
     setLoading(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/auth/login`,{
@@ -70,11 +73,11 @@ export default function Login() {
             {...register('email',{
                 required: {
                     value: true,
-                    message: 'El email es obligatorio'
+                    message: 'The email is required'
                 },
                 pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'No es un email válido'
+                    message: 'Email is not valid'
                 } 
             })}
                 
@@ -92,11 +95,11 @@ export default function Login() {
             {...register('password',{
                 required: {
                     value: true,
-                    message: 'El password es obligatorio'
+                    message: 'The password is required'
                 },
                 minLength: {
                     value: 6,
-                    message: 'El password debe tener al menos 6 caracteres'
+                    message: 'The password must be at least 6 characters'
                 }
             })}
             />
@@ -104,6 +107,10 @@ export default function Login() {
               errors.password && <span className='error-message'>{errors.password.message}</span>
             }
         </div>
+        <button onClick={loginWithGoogle} type="button" className="btn flex items-center justify-center">
+          <svg className="w-4 h-4 mr-2 -ml-1" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+          Sign in with Google
+        </button>
         <button className='btn'>{loading ? <Spinner/> :'LOGIN'}</button>
         <div className='flex justify-between w-full text-xs'>
           <button 
@@ -111,8 +118,8 @@ export default function Login() {
           data-te-toggle="modal"
           data-te-target="#staticBackdrop"
           data-te-ripple-init
-          data-te-ripple-color="light">Recuperar contraseña</button>
-          <Link href='auth/register'>Registrarse</Link>
+          data-te-ripple-color="light">Recovery account</button>
+          <Link href='auth/register'>Register</Link>
         </div>
         
     </form>

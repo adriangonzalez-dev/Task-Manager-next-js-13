@@ -58,7 +58,7 @@ export default function Modal() {
               className="text-xl font-medium leading-normal text-slate-800"
               id="exampleModalLabel"
             >
-              Recovery password
+              Recovery account
             </h5>
             <button
               type="button"
@@ -88,7 +88,7 @@ export default function Modal() {
                     htmlFor="email"
                     className="block text-sm font-medium text-neutral-700"
                 >
-                    Ingrese su email
+                    Email
                 </label>
                 <input
                     type="email"
@@ -96,10 +96,10 @@ export default function Modal() {
                     id="email"
                     className="input w-full"
                     {...register('email',{
-                        required: 'El email es requerido',
+                        required: 'The email is required',
                         pattern: {
                             value:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message:'El email no es válido'
+                            message:'Email is not valid'
                     }
                     })}
                 />

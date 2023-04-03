@@ -125,6 +125,7 @@ export default function EditForm({params}) {
       </div>
       <button type="submit" className='btn'>{loading ? <Spinner/> : 'EDIT'}</button>
       <button 
+      type='button'
       onClick={handleBack}
       className="btn">Back to tasks</button>
     </form>
